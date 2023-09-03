@@ -1,35 +1,77 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://getbootstrap.com/docs/5.2/assets/css/docs.css" rel="stylesheet">
-</head>
-<style>
-    body{
-         background-image: url(https://images.unsplash.com/photo-1483921020237-2ff51e8e4b22?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=750&q=80); 
-    background-repeat: no-repeat;
-    background-size: cover;
-    /* background-image: url(./Screen\ Shot\ 2022-09-23\ at\ 12.13.09\ PM.png); */
+  <title>Custom Countdown Timer</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f2f2f2;
+      text-align: center;
+      padding: 20px;
     }
-</style>
-<body>
-    <center>
-    <div class="mt-5"></div><br><br><br><br><br><br><br><br><br><br>
-        <div class="mt-5" style="justify-content: center;">
-    <input class="text-center" type="h" name="" id="hour" placeholder="H"  style="width: 3%;" maxlength="2"> 
-    <input class="text-center" type="m" name="" id="min" placeholder="M" style="width: 3%;" maxlength="2">
-    <input class="text-center" type="ss" name="" id="sec" placeholder="SS" style="width: 3%;" maxlength="2"><br>
-    <button class="btn btn-success mt-3 ms-3" onclick="start()">Start</button>
-    <button class="btn btn-success mt-3" onclick="pause()">Pause</button>
-    <button class="btn btn-success mt-3" onclick="reset()">Reset</button>
-</div>
-</center>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.bundle.min.js"></script>
-<script src="countdown.js"></script>
 
+    #countdown {
+      font-size: 36px;
+      color: #333;
+      margin: 20px;
+    }
+
+    @media (max-width: 768px) {
+      #countdown {
+        font-size: 24px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1>Custom Countdown Timer</h1>
+  
+  <div>
+    <label for="dateInput">Enter Target Date and Time:</label>
+    <input type="datetime-local" id="dateInput">
+    <button onclick="setCustomCountdown()">Start Countdown</button>
+  </div>
+
+  <div id="countdown"></div>
+
+  <script>
+    let targetDate = null;
+    let countdownInterval;
+
+    function setCustomCountdown() {
+      const dateInput = document.getElementById('dateInput').value;
+      targetDate = new Date(dateInput);
+
+      if (!isNaN(targetDate) && targetDate > new Date()) {
+        clearInterval(countdownInterval); // Clear any existing countdown
+        updateCountdown(); // Start or restart the countdown
+        // Disable the input and button after setting the countdown
+        document.getElementById('dateInput').disabled = true;
+        document.querySelector('button').disabled = true;
+      } else {
+        alert('Invalid date or date is in the past. Please enter a valid future date and time.');
+      }
+    }
+
+    function updateCountdown() {
+      countdownInterval = setInterval(function() {
+        const currentDate = new Date();
+        const timeLeft = targetDate - currentDate;
+
+        if (timeLeft <= 0) {
+          document.getElementById('countdown').innerHTML = "Countdown Expired!";
+          clearInterval(countdownInterval); // Stop the countdown when it expires
+        } else {
+          const days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
+          const hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+          const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+          const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
+
+          const countdownString = `${days}d ${hours}h ${minutes}m ${seconds}s`;
+          document.getElementById('countdown').innerHTML = countdownString;
+        }
+      }, 1000);
+    }
+  </script>
 </body>
 </html>
